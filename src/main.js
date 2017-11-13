@@ -10,7 +10,7 @@ import router from './router'
 
 Vue.use(Vuetify)
 Vue.use(VueResource)
-
+NProgress.configure({ easing: 'ease', speed: 500, minimum: 0.8 });
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

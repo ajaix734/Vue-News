@@ -1,5 +1,6 @@
 <template>
   <v-app class="grey lighten-2">
+
     <v-container fluid>
       <v-layout row wrap>
 
@@ -95,11 +96,9 @@ export default {
   data() {
     return {
       drawer: false,
-      show: false,
       items: [],
       articlesCollection: {},
-      articles: [],
-      test: []
+      articles: []
     };
   },
   created() {
@@ -110,6 +109,7 @@ export default {
       this.articlesCollection = JSON.parse(
         sessionStorage.getItem("selectedArticlesCollection")
       );
+      NProgress.start();
       this.$http
         .get(
           `https://newsapi.org/v1/articles?source=${JSON.parse(
@@ -118,8 +118,11 @@ export default {
         )
         .then(Response => {
           this.articles = Response.data.articles;
+          NProgress.done(true);
+          NProgress.remove();
         });
     } else {
+      NProgress.start();
       this.$http
         .get(
           "https://newsapi.org/v1/articles?source=google-news&apiKey=d59cfaf4b5944cbeab7fdade05c160a7"
@@ -127,11 +130,14 @@ export default {
         .then(Response => {
           (this.articlesCollection = Response.data),
             (this.articles = Response.data.articles);
+          NProgress.done();
+          NProgress.remove();
         });
     }
   },
   methods: {
     getChannel(id) {
+      NProgress.start();
       this.$http
         .get(
           `https://newsapi.org/v1/articles?source=${id}&apiKey=d59cfaf4b5944cbeab7fdade05c160a7`
@@ -145,10 +151,13 @@ export default {
               JSON.stringify(Response.data)
             );
             sessionStorage.setItem("selectedId", JSON.stringify(id));
+            NProgress.done();
+            NProgress.remove();
           }
         });
     },
     getHomeNews() {
+      NProgress.start();
       sessionStorage.clear();
       this.$http
         .get(
@@ -157,6 +166,8 @@ export default {
         .then(Response => {
           (this.articlesCollection = Response.data),
             (this.articles = Response.data.articles);
+          NProgress.done();
+          NProgress.remove();
         });
     }
   }
